@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>BrawlThings</title>
+
+<style>
+
+  body {
+
+    margin: 0;
+
+    font-family: 'Arial Black', Arial, sans-serif;
+
+    background: #050510;
+
+    color: white;
+
+  }
+
+  header {
+
+    background: linear-gradient(90deg, #ff0055, #ffb703);
+
+    padding: 20px;
+
+    text-align: center;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+  }
+
+  nav {
+
+    display: flex;
+
+    justify-content: center;
+
+    background-color: #0f0f1f;
+
+    flex-wrap: wrap;
+
+  }
+
+  nav button {
+
+    background: none;
+
+    border: none;
+
+    color: white;
+
+    padding: 15px 20px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+  }
+
+  nav button:hover {
+
+    background-color: #ff0055;
+
+  }
+
+  .active {
+
+    background-color: #ffb703 !important;
+
+    color: black !important;
+
+  }
+
+  section {
+
+    display: none;
+
+    padding: 25px;
+
+    animation: fade 0.3s ease;
+
+  }
+
+  section.active-section {
+
+    display: block;
+
+  }
+
+  @keyframes fade {
+
+    from {opacity: 0;}
+
+    to {opacity: 1;}
+
+  }
+
+  .card {
+
+    background: #121222;
+
+    padding: 20px;
+
+    margin: 15px 0;
+
+    border-radius: 12px;
+
+    box-shadow: 0 0 10px rgba(255,0,85,0.3);
+
+  }
+
+  input, textarea {
+
+    width: 100%;
+
+    margin: 8px 0;
+
+    padding: 10px;
+
+    border-radius: 6px;
+
+    border: none;
+
+  }
+
+  button.action {
+
+    background: #ff0055;
+
+    border: none;
+
+    padding: 12px 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    border-radius: 6px;
+
+    color: white;
+
+  }
+
+  footer {
+
+    text-align: center;
+
+    padding: 15px;
+
+    color: #777;
+
+    background: #000;
+
+  }
+
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<!-- Firebase Compat (versão para sites estáticos) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+</head>
+
+<body>
+
+<header>BrawlThings</header>
+
+<nav>
+
+  <button class="tab active" onclick="showTab('inicio', this)">🏠 Início</button>
+
+  <button class="tab" onclick="showTab('meta', this)">📊 Meta</button>
+
+  <button class="tab" onclick="showTab('comps', this)">🧠 Composições</button>
+
+  <button class="tab" onclick="showTab('ranked', this)">🏆 Ranqueado</button>
+
+  <button class="tab" onclick="showTab('divulgacao', this)">📢 Divulgação</button>
+
+</nav>
+
+<!-- INÍCIO -->
+
+<section id="inicio" class="active-section">
+
+  <div class="card">
+
+    <h2>Bem-vindo ao BrawlThings.</h2>
+
+    <p>
+
+      Brawl Stars é um dos jogos mobile mais competitivos da atualidade, focado em batalhas 3v3 em tempo real, onde estratégia, controle de mapa e sinergia de equipe fazem toda a diferença. 
+
+      Nosso objetivo com este site é trazer uma central completa de informações sobre o meta atual, melhores composições, escolhas estratégicas no modo ranqueado e um espaço para a comunidade se conectar.
+
+      <br><br>
+
+      Aqui você vai encontrar análises de brawlers, mapas, estilo de jogo, pressão de lane, split de rotas e controle de objetivo. 
+
+      Este site foi criado para jogadores que querem subir troféus, dominar o competitivo e entender o jogo em um nível mais avançado.
+
+      <br><br>
+
+      Atualizamos as informações de acordo com patches, buffs, nerfs e mudanças no meta.
+
+    </p>
+
+  </div>
+
+</section>
+
+<!-- META -->
+
+<section id="meta">
+
+  <div class="card">
+
+    <h2>📊 Meta Atual</h2>
+    <h1>Brawlers/taxa de Vitória</h1>
+
+    <ul>
+
+      <li>Trunk </li>
+
+      <li>Ziggy </li>
+
+      <li>Meg </li>
+
+      <li>Finx </li>
+
+      <li>Jessie </li>
+      
+      <li>Doug </li>
+      
+      <li>Rosa </li>
+      
+      <li>Lola</li>
+      
+      <li>Gigi</li>
+
+    </ul>
+
+  </div>
+
+</section>
+
+<!-- COMPOSIÇÕES -->
+
+<section id="comps">
+
+  <div class="card">
+
+    <h2>🧠 Composições Meta</h2>
+
+    <p><b>Controle Total:</b> Belle + Charlie + Spike</p>
+
+    <p><b>Agressiva:</b> Fang + Max + Angelo</p>
+
+    <p><b>Zona:</b> Lou + Sandy + Emz</p>
+
+  </div>
+
+</section>
+
+<!-- RANQUEADO -->
+
+<section id="ranked">
+
+  <div id="mapasRotacao"></div>
+  <div class="card">
+  <h2>🏆 Mapas da Rotação Atual</h2>
+  <div id="mapas" style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;"></div>
+</div>
+
+  <div class="card">
+
+    <h3>Picks e Bans Gerais</h3>
+
+    <p>Banimentos comuns: Charlie, Spike, Fang</p>
+
+    <p>Picks fortes: Gene, Belle, Max, Leon</p>
+
+  </div>
+
+</section>
+
+<!-- DIVULGAÇÃO -->
+
+<section id="divulgacao">
+    
+    <div class="card" id="loginBox">
+  <h2>🔐 Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="senha" type="password" placeholder="Senha">
+  <button class="action" onclick="registrar()">Criar Conta</button>
+  <button class="action" onclick="logar()">Entrar</button>
+  <p id="userStatus"></p>
+</div>
+
+  <div class="card">
+
+    <h2>📢 Divulgue seu Clube ou Discord</h2>
+
+    <input id="nome" placeholder="Nome do Clube/Servidor">
+
+    <textarea id="desc" placeholder="Descrição..."></textarea>
+
+    <input id="link" placeholder="Link do Discord">
+
+    
+
+    <button class="action" onclick="divulgar()">Divulgar (apenas logado)</button>
+
+  </div>
+
+  <div id="lista"></div>
+
+</section>
+
+<footer> BrawlThings by: Brayadev</footer>
+
+
+<!-- SCRIPT PRINCIPAL -->
+<script type="module">
+  // ===== IMPORTS DO FIREBASE =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    onSnapshot, 
+    query, 
+    orderBy 
+  } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+  // ===== CONFIG FIREBASE =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyDib7UvblZ70m-bK6G-CPLb-Tu6Wiw5CGk",
+    authDomain: "brawlthings-c8be1.firebaseapp.com",
+    projectId: "brawlthings-c8be1",
+    storageBucket: "brawlthings-c8be1.appspot.com",
+    messagingSenderId: "687457539690",
+    appId: "1:687457539690:web:d70077499cf990d43d5c13"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ===== SISTEMA DE ABAS =====
+  window.showTab = function(id, btn) {
+    document.querySelectorAll("section").forEach(s => s.classList.remove("active-section"));
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+
+    document.getElementById(id).classList.add("active-section");
+    btn.classList.add("active");
+  };
+
+  // ===== LOGIN =====
+  window.registrar = function() {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+
+    createUserWithEmailAndPassword(auth, email, senha)
+      .then(() => alert("Conta criada!"))
+      .catch(err => alert(err.message));
+  };
+
+  window.logar = function() {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+
+    signInWithEmailAndPassword(auth, email, senha)
+      .then(() => alert("Logado com sucesso!"))
+      .catch(err => alert(err.message));
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    const status = document.getElementById("userStatus");
+    if(user){
+      status.innerText = `Logado como: ${user.email}`;
+    } else {
+      status.innerText = "Não logado";
+    }
+  });
+
+  // ===== DIVULGAÇÕES =====
+  window.divulgar = async function() {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("Você precisa estar logado!");
+      return;
+    }
+
+    const nome = document.getElementById("nome").value;
+    const desc = document.getElementById("desc").value;
+    const link = document.getElementById("link").value;
+
+    if (!nome || !desc || !link) {
+      alert("Preencha tudo!");
+      return;
+    }
+
+    await addDoc(collection(db, "divulgacoes"), {
+      nome,
+      descricao: desc,
+      link,
+      autor: user.email,
+      data: new Date()
+    });
+
+    document.getElementById("nome").value = "";
+    document.getElementById("desc").value = "";
+    document.getElementById("link").value = "";
+  };
+
+  const q = query(collection(db, "divulgacoes"), orderBy("data", "desc"));
+  onSnapshot(q, (snapshot) => {
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const d = doc.data();
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        <h3>${d.nome}</h3>
+        <p>${d.descricao}</p>
+        <small>Postado por: ${d.autor}</small><br>
+        <a href="${d.link}" target="_blank" style="color:#ffb703;">Entrar</a>
+      `;
+      lista.appendChild(div);
+    });
+  });
+
+  // ===== MAPAS RANQUEADOS (SEM TOKEN) =====
+  fetch("https://corsproxy.io/?https://api.brawlapi.com/v1/maps")
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("mapas");
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      data.list.slice(0, 12).forEach(mapa => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.style.width = "160px";
+
+        div.innerHTML = `
+          <img src="${mapa.imageUrl}" style="width:100%;border-radius:10px;">
+          <h4>${mapa.name}</h4>
+          <p>${mapa.gameMode?.name || ""}</p>
+        `;
+
+        container.appendChild(div);
+      });
+    })
+    .catch(err => console.log("Erro ao carregar mapas:", err));
+</script>
+</body>
+
+</html>
