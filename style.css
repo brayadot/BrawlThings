@@ -282,3 +282,17 @@ button.action {
   display: flex;
   gap: 10px;
 }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+section {
+  flex: 1;
+}
+
+footer {
+  margin-top: auto;
+}
