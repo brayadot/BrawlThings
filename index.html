@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>BrawlThings</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+
+<header>BrawlThings</header>
+
+<nav>
+  <button class="tab active" onclick="showTab('inicio', this)">🏠 Início</button>
+  <button class="tab" onclick="showTab('meta', this)">📊 Meta</button>
+  <button class="tab" onclick="showTab('comps', this)">🧠 Composições</button>
+  <button class="tab" onclick="showTab('ranked', this)">🗺️ Mapas</button>
+  <button class="tab" onclick="showTab('divulgacao', this)">📢 Divulgação</button>
+</nav>
+
+
+<!-- INÍCIO -->
+<section id="inicio" class="active-section">
+
+  <!-- PAINEL ADMIN -->
+  <div class="card" id="adminPanel" style="display:none;">
+  <h2>🛠️ Painel Admin</h2>
+
+  <input id="newsTitle" placeholder="Título da notícia">
+  <input id="newsImage" placeholder="URL da imagem (opcional)">
+  <textarea id="newsContent" placeholder="Conteúdo da notícia"></textarea>
+
+  <button class="action" onclick="publicarNoticia()">Publicar</button>
+  <button class="action" id="cancelEdit" style="display:none;" onclick="cancelarEdicao()">Cancelar edição</button>
+</div>
+
+  <!-- NOTÍCIAS -->
+  <div class="card">
+    <h2>📰 Últimas Notícias</h2>
+    <div id="newsList"></div>
+  </div>
+
+</section>
+
+<!-- META -->
+<section id="meta">
+  <div class="card">
+    <h2>📊 Meta Atual</h2>
+    <ul class="brawler-list">
+      <li><img src="https://api.brawlapi.com/v1/brawler/16000000/avatar"> Shelly</li>
+      <li><img src="https://api.brawlapi.com/v1/brawler/16000002/avatar"> Colt</li>
+      <li><img src="https://api.brawlapi.com/v1/brawler/16000007/avatar"> Jessie</li>
+    </ul>
+  </div>
+</section>
+
+<!-- COMPS -->
+<section id="comps">
+  <div class="card">
+    <h2>Melhores composições de acordo com a taxa de vitoria</h2>
+
+    <div class="team-list">
+
+      <div class="team-row">
+        <div class="team-name">R-T, DOUG, KAZE</div>
+        <div class="team-win">90.5%</div>
+      </div>
+
+      <div class="team-row">
+        <div class="team-name">SPIKE, TICK, ALLI</div>
+        <div class="team-win">88.8%</div>
+      </div>
+
+      <div class="team-row">
+        <div class="team-name">JACKY, DOUG, KAZE</div>
+        <div class="team-win">85.0%</div>
+      </div>
+      
+      <div class="team-row">
+          <div class="team-name">TICK, BEA, ALLI</div>
+          <div class="team-win">83.6%</div>
+      </div>
+      
+      <div class="team-row">
+          <div class="team-name">CORDELIUS, KENJI, OLLIE</div>
+          <div class="team-win">83.0%</div>
+      </div>
+      
+      <div class="team-row">
+          <div class="team-name">BIBI, GRIFF, DOUG</div>
+          <div class="team-win">82.7%</div>
+      </div>
+      
+      <div class="team-row">
+          <div class="team-name">BROCK, TICK, ALLI</div>
+          <div class="team-win">82.6%</div>
+      </div>
+      
+      <div class="team-row">
+          <div class="team-name">FRANK, CORDELIUS, MINA</div>
+          <div class="team-win">82.1%</div>
+      </div>
+      
+      <div class="team-row">
+          <div class="team-name">TICK, SAM, ALLI</div>
+          <div class="team-win">81.9%</div>
+      </div>
+      
+      <div class="team-row">
+          <div class="team-name">TICK, MAX, ALLI</div>
+          <div class="team-win">80.4%</div>
+      </div>
+      
+      
+    </div>
+  </div>
+</section>
+
+<!-- RANKED -->
+<section id="ranked">
+  <div class="card">
+    <h2>🏆 Mapas da Rotação Atual</h2>
+    <div id="mapas" class="maps-grid"></div>
+  </div>
+</section>
+
+<!-- DIVULGAÇÃO -->
+<section id="divulgacao">
+
+  <div class="card" id="loginBox">
+    <h2>🔐 Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="senha" type="password" placeholder="Senha">
+    <button class="action" onclick="registrar()">Criar Conta</button>
+    <button class="action" onclick="logar()">Entrar</button>
+    <p id="userStatus"></p>
+  </div>
+
+  <div class="card">
+    <h2>📢 Divulgue seu Clube</h2>
+    <input id="nome" placeholder="Nome do Clube/Servidor">
+    <textarea id="desc" placeholder="Descrição..."></textarea>
+    <input id="link" placeholder="Link do Discord">
+    <button class="action" onclick="divulgar()">Divulgar</button>
+  </div>
+
+  <div id="lista"></div>
+
+</section>
+
+<!-- MODAL DE MAPAS -->
+<div id="mapModal" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h2 id="modalMapaNome">Mapa</h2>
+      <span class="close" onclick="fecharModal()">✖</span>
+    </div>
+
+    <h3>✅ Melhores Picks</h3>
+    <ul id="modalPicks"></ul>
+
+    <h3>⛔ Melhores Bans</h3>
+    <ul id="modalBans"></ul>
+
+  </div>
+</div>
+
+<!-- SCRIPT PRINCIPAL -->
+<script src="script.js"></script>
+
+<footer class="footer-full">
+  <div class="footer-content">
+
+    <h2 class="footer-logo">BrawlThings</h2>
+
+    <p class="footer-desc">
+      O BrawlThings é sua fonte completa de análises, comps meta, mapas da rotação,
+      dicas avançadas e tudo sobre o cenário competitivo de Brawl Stars.
+    </p>
+
+    <p class="footer-desc">
+      Mantemos o site atualizado de acordo com patches, buffs, nerfs e mudanças no meta.
+    </p>
+
+    <h3 class="footer-subtitle">ACESSE TAMBÉM</h3>
+
+    <ul class="footer-links">
+      <li><a href="https://discord.gg/WAhSeupaQ">Comunidade no Discord</a></li>
+      <li><a href="#">Nosso Canal no YouTube</a></li>
+      <li><a href="#">Política de Privacidade</a></li>
+    </ul>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2025 — BrawlThings. Todos os direitos reservados.
+  </div>
+</footer>
+
+</body>
+</html>
